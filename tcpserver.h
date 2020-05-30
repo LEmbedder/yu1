@@ -25,6 +25,8 @@ class TcpServer : public QObject
     struct clientSocketDef clientSockets[MAXTCPCLIENTS];
     void stopServerSocket();
     void initTcpServerParams();
+    void analysisData(clientSocketDef clientSocket);
+    bool calculateCrc(QByteArray data, int len);
 public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;
