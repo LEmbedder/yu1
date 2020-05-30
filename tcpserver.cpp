@@ -170,6 +170,7 @@ void TcpServer::clientSocketReadyRead(void)
                 }
                 /* 接收到的数据 */
                 qDebug()<<clientSockets[i].readBuf;
+//                clientSockets[i].socket->write(clientSockets[i].readBuf);
             }
         }
     }
