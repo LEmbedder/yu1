@@ -222,16 +222,16 @@ void TcpServer::analysisData(struct clientSocketDef clientSocket)
 
     int index = int(data.at(1)<<8) +int(data.at(2));//包序:高位在前低位在后
     /* handshape data */
-    if (data.at(0) == 0x3A)
+    if (int(data.at(0)) == 0x3A)
     {
         /* 需要的数据64B */
         data_get = data.mid(3);
         qDebug()<<data_get;
     }
-    else if (data.at(0) == 0x3B)/* 数据包 */
+    else if (int(data.at(0)) == 0x3B)/* 数据包 */
     {
-        int freq_index = data.at(3);//频段记号 0-3
-        int data_16K_index = data.at(4);//序号0-15
+        int freq_index = (int)data.at(3);//频段记号 0-3
+        int data_16K_index = (int)data.at(4);//序号0-15
 
         /* 需要的数据1024B */
         data_get = data.mid(5);
