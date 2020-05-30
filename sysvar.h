@@ -2,12 +2,17 @@
 #define SYSVAR_H
 
 /*
- * 数据的定义
+ * 服务端数据
  */
 #define MAXTCPCLIENTS 1
 #define MAXTCPBUFSIZE (1024 * 1024)
 #define SOCKETTIMEOUT 3000   //3000ms
 
+/*
+ * 客户端数据
+ */
+#define HOSTIP   "192.168.1.4"
+#define HOSTPORT 5566
 /*
  * LAN定义
 */
