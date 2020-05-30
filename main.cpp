@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    TcpServer *tcpserver = new TcpServer;
+    TcpServer tcpserver;
 
     return a.exec();
 }

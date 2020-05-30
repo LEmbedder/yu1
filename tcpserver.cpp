@@ -164,6 +164,10 @@ void TcpServer::clientSocketReadyRead(void)
             if (len > 0)
             {
                 clientSockets[i].readBuf = clientSockets[i].socket->readAll();
+                while (clientSockets[i].socket->bytesAvailable() > 0)
+                {
+                    clientSockets[i].readBuf += clientSockets[i].socket->readAll();
+                }
                 /* 接收到的数据 */
                 qDebug()<<clientSockets[i].readBuf;
             }

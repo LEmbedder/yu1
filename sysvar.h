@@ -2,6 +2,13 @@
 #define SYSVAR_H
 
 /*
+ * 数据的定义
+ */
+#define MAXTCPCLIENTS 1
+#define MAXTCPBUFSIZE (1024 * 1024)
+#define SOCKETTIMEOUT 3000   //3000ms
+
+/*
  * LAN定义
 */
 struct lanDef
@@ -19,12 +26,7 @@ struct lanDef
 struct SysData
 {
     lanDef lan;
-
 };
-
-#define MAXTCPCLIENTS 1
-#define MAXTCPBUFSIZE (1024 * 1024)
-#define SOCKETTIMEOUT 3000   //3000ms
 
 extern SysData sysData;
 
