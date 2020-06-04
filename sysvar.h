@@ -7,12 +7,20 @@
 #define MAXTCPCLIENTS 1
 #define MAXTCPBUFSIZE (1024 * 1024)
 #define SOCKETTIMEOUT 3000   //3000ms
-
+#define SERVERPORT 5555
 /*
  * 客户端数据
  */
 #define HOSTIP   "192.168.1.4"
 #define HOSTPORT 5566
+
+/*
+ * 应答包返回结果
+ */
+#define SUCCESS 0x00 //数据包接收成功；
+#define CRCERR  0x01 //校验错误；
+#define LENERR  0x02 //长度错误；
+
 /*
  * LAN定义
 */

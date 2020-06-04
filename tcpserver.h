@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <QByteArray>
 #include "sysvar.h"
+#include <string.h>
 
 struct clientSocketDef
 {
@@ -27,6 +28,9 @@ class TcpServer : public QObject
     void initTcpServerParams();
     void analysisData(clientSocketDef clientSocket);
     bool calculateCrc(QByteArray data, int len);
+    void outputToSocket(char *value, int len);
+    unsigned short countCRC(QByteArray pBuf);
+    unsigned short countCRC(char pBuf[], int length);
 public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;
