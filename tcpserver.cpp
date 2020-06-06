@@ -342,7 +342,7 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                QFile file(current_date);
+                QFile file(current_date+".dat");
                 file.open(QIODevice::WriteOnly);
                 QDataStream out(&file);
                 out.setVersion(QDataStream::Qt_4_0);
