@@ -9,6 +9,9 @@
 #include <QByteArray>
 #include "sysvar.h"
 #include <string.h>
+#include <QFile>
+#include <QDataStream>
+#include <QDateTime>
 
 struct clientSocketDef
 {
@@ -22,15 +25,20 @@ struct clientSocketDef
 class TcpServer : public QObject
 {
     Q_OBJECT
+    QByteArray data_all;
+    QByteArray data2write;
     int getIdleClientSocketIndex();
     struct clientSocketDef clientSockets[MAXTCPCLIENTS];
     void stopServerSocket();
     void initTcpServerParams();
-    void analysisData(clientSocketDef clientSocket);
+//    void analysisData(clientSocketDef clientSocket);
     bool calculateCrc(QByteArray data, int len);
     void outputToSocket(char *value, int len);
     unsigned short countCRC(QByteArray pBuf);
     unsigned short countCRC(char pBuf[], int length);
+    void analysisData(clientSocketDef *clientSocket);
+    void test();
+    unsigned short countCRC2(char *pBuf, unsigned short DataLen);
 public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;

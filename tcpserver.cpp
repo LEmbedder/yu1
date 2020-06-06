@@ -30,12 +30,14 @@ unsigned short TcpServer::countCRC(QByteArray pBuf)
 
     while (dataLen < pBuf.length())
     {
+//        printf("0x%x ",(uint8_t)pBuf.at(dataLen));
         temp = (uint8_t)(CRC_Code >> 8);
         CRC_Code <<= 8;
         //CRC_Code ^= CrcTab[temp ^ (pBuf[dataLen])];
         CRC_Code ^= CrcTab[temp ^ ( ((uint8_t)pBuf.at(dataLen)) & 0XFF)];
         dataLen++;
     }
+//    printf("\n");
     return (CRC_Code);
 }
 
@@ -55,12 +57,16 @@ unsigned short TcpServer::countCRC(char pBuf[], int length)
     }
     return (CRC_Code);
 }
+
 TcpServer::TcpServer(QObject *parent) : QObject(parent)
 {
     serverSocket    = NULL;
 
     initTcpServerParams();
     startServerSocket();
+    data2write.resize(16384);
+    data2write.clear();
+//    test();
 }
 void TcpServer::initTcpServerParams(void)
 {
@@ -217,13 +223,13 @@ void TcpServer::clientSocketReadyRead(void)
             len = clientSockets[i].socket->bytesAvailable();
             if (len > 0)
             {
-                clientSockets[i].readBuf = clientSockets[i].socket->readAll();
+//                clientSockets[i].readBuf = clientSockets[i].socket->readAll();
                 while (clientSockets[i].socket->bytesAvailable() > 0)
                 {
                     clientSockets[i].readBuf += clientSockets[i].socket->readAll();
                 }
                 /* 接收到的数据 */
-                analysisData(clientSockets[i]);
+                analysisData(&clientSockets[i]);
             }
         }
     }
@@ -237,27 +243,41 @@ void TcpServer::clientSocketError(QAbstractSocket::SocketError)
 
 bool TcpServer::calculateCrc(QByteArray data,int len)
 {
+    unsigned short high,low;
     unsigned short crcsum = 0;
     unsigned short crc;//低位在前高位在后
 
-    crc = int(data.at(len-2))<<8 + int(data.at(len-1));
-    crcsum = countCRC(data.mid(1,-2));
-    printf("crcsum = 0x%x",crcsum);
+#if 0
+    for (int i = 0; i < len; i++)
+    {
+        printf("0x%x ",(unsigned char)data.at(i));
+    }
     printf("\n");fflush(stdout);
+#endif
+
+    high = ((uint8_t)data.at(len-1))&0xFFFF;
+    low = ((uint8_t)data.at(len-2))&0xFFFF;
+//    printf("high = 0x%x;low = 0x%x\n",high,low);
+    crc = (high<<8) + low;
+    crcsum = countCRC(data.mid(1,data.length()-3));
+//    printf("crcsum = 0x%x;crc = 0x%x",crcsum,crc);
+//    printf("\n");fflush(stdout);
     if (crcsum != crc)
     {
-        qDebug("crcsum = %d != crc = %d ,calculateCrc data error",crcsum,crc);
+        qDebug("crcsum = 0x%x != crc = 0x%x ,calculateCrc data error",crcsum,crc);
         return false;
     }
 
     return true;
 }
-
-void TcpServer::analysisData(struct clientSocketDef clientSocket)
+#define HANDSHANPLEN 69
+#define DATALEN      16496
+#define ONEBAGLEN    1031
+void TcpServer::analysisData(struct clientSocketDef *clientSocket)
 {
-    QByteArray data = clientSocket.readBuf;
-    QByteArray data_get;
+    QByteArray data = clientSocket->readBuf;
     int len = data.length();
+//    qDebug()<<len<<":"<<uint8_t(data.at(0));
 
 #if 0
     for (int i = 0; i < len; i++)
@@ -268,9 +288,9 @@ void TcpServer::analysisData(struct clientSocketDef clientSocket)
 #endif
 
     /* 握手信号 */
-    if (int(data.at(0)) == 0x3A)
+    if ((int(data.at(0)) == 0x3A) && (len >= HANDSHANPLEN))
     {
-        if (!calculateCrc(data, len))
+        if (!calculateCrc(data, HANDSHANPLEN))
             return;
         /* 发送应答包 */
         unsigned short crc = 0;
@@ -283,13 +303,52 @@ void TcpServer::analysisData(struct clientSocketDef clientSocket)
         tmp = (unsigned short *)&ret[70];
         *tmp = crc;
         outputToSocket(ret, 72);
+        clientSocket->readBuf = clientSocket->readBuf.mid(HANDSHANPLEN);
 
     }/* 数据包 */
-    else if (int(data.at(0)) == 0x3B)
+    else if (uint8_t(data.at(0)) == 0x3B)
     {
-
         /* 需要的数据1024B */
+        if (data.length() >= DATALEN)
+        {
+            data_all = clientSocket->readBuf.mid(0, DATALEN);
+            /* 对64K拆包校验,如果无误并写入文件 */
+            for (int i = 0; i < 16; i++)
+            {
+                QByteArray tmp = data_all.mid(0,ONEBAGLEN);
+//                qDebug("tmp = %d",tmp.length());
+                if (!calculateCrc(tmp,ONEBAGLEN)){
+                    goto end;
+                }
+                data2write += tmp.mid(7,tmp.length()-3);
+            }
 
+//            qDebug("data2write = %d",data2write.length());
+//            printf("0x%x ",(uint8_t)data2write.at(0));
+//            printf("0x%x ",(uint8_t)data2write.at(1));
+//            printf("0x%x ",(uint8_t)data2write.at(2));
+//            printf("0x%x ",(uint8_t)data2write.at(16383));
+//            printf("\n");fflush(stdout);
+            /* 写入文件 */
+            {
+                QDateTime current_date_time = QDateTime::currentDateTime();
+                QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
+                QFile file(current_date);
+                file.open(QIODevice::WriteOnly);
+                QDataStream out(&file);
+                out.setVersion(QDataStream::Qt_4_0);
+                out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
+                file.close();
+            }
+
+end:
+            data2write.clear();
+            data_all.clear();
+            clientSocket->readBuf = clientSocket->readBuf.mid(DATALEN);
+//            qDebug("\n");
+        }else{
+            return;
+        }
 //        if (data_16K_index == 15)
 //        {
 //            /* 发送应答包 */
@@ -316,4 +375,31 @@ void TcpServer::outputToSocket(char* value, int len)
         }
         return;
     }
+}
+/* 源代码用了反而不对 */
+unsigned short TcpServer::countCRC2(char *pBuf, unsigned short DataLen)
+{
+    unsigned char temp;
+    unsigned short CRC_Code = 0;
+    for (int i =0 ;i < DataLen; i++)
+    {
+        printf("0x%x ",(unsigned char)pBuf[i]);
+    }
+    printf("\n");
+    while(DataLen--)
+    {
+        temp = CRC_Code >> 8;
+        CRC_Code <<= 8;
+        CRC_Code ^= CrcTab[temp ^ (*pBuf)];
+        pBuf++;
+    }
+    return (CRC_Code);
+}
+void TcpServer::test(void)
+{
+    QByteArray ba;
+//    ba << 0x03<<0x01<<0x01<<0x80<<0x01<<0x02<<0xFF<<0x17<<0x0a;
+    ba.append(0x03).append(0x03).append(0x01).append(0x01).append(0x80).append(0x01).append(0x02).append(0xFF)
+            .append(0x17).append(0x0a).append(0x22).append(0xb5);
+    calculateCrc(ba,ba.length());
 }
