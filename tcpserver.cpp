@@ -311,6 +311,13 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
         /* 需要的数据1024B */
         if (data.length() >= DATALEN)
         {
+            unsigned short crc = 0;
+            unsigned short *tmp = 0;
+            char ret[72];
+            memset(ret, 0 ,72);
+            ret[0] = 0x30;
+            ret[1] = 0x3B;
+
             data_all = clientSocket->readBuf.mid(0, DATALEN);
             /* 对64K拆包校验,如果无误并写入文件 */
             for (int i = 0; i < 16; i++)
@@ -318,8 +325,10 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
                 QByteArray tmp = data_all.mid(0,ONEBAGLEN);
 //                qDebug("tmp = %d",tmp.length());
                 if (!calculateCrc(tmp,ONEBAGLEN)){
+                    ret[5] = CRCERR;
                     goto end;
                 }
+                ret[5] = SUCCESS;
                 data2write += tmp.mid(7,tmp.length()-3);
             }
 
@@ -342,6 +351,12 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
             }
 
 end:
+            /* 返回握手确认包 */
+            crc = countCRC(&ret[1],70);
+            tmp = (unsigned short *)&ret[70];
+            *tmp = crc;
+            outputToSocket(ret, 72);
+
             data2write.clear();
             data_all.clear();
             clientSocket->readBuf = clientSocket->readBuf.mid(DATALEN);
