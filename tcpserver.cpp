@@ -356,7 +356,8 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
                 file.open(QIODevice::WriteOnly);
                 QDataStream out(&file);
                 out.setVersion(QDataStream::Qt_4_0);
-                out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
+                for (int i = 0; i < 1024; i++)
+                    out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
                 file.close();
             }
 
