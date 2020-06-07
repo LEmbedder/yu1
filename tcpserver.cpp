@@ -66,6 +66,15 @@ TcpServer::TcpServer(QObject *parent) : QObject(parent)
     startServerSocket();
     data2write.resize(16384);
     data2write.clear();
+
+    QDir tempDir;
+    //临时保存程序当前路径
+    currentDir = tempDir.currentPath()+"/data/";
+    //如果filePath路径不存在，创建它
+    if(!tempDir.exists(currentDir))
+    {
+        tempDir.mkpath(currentDir);
+    }
 //    test();
 }
 void TcpServer::initTcpServerParams(void)
@@ -342,7 +351,8 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                QFile file(current_date+".dat");
+                current_date = currentDir + current_date + ".dat";
+                QFile file(current_date);
                 file.open(QIODevice::WriteOnly);
                 QDataStream out(&file);
                 out.setVersion(QDataStream::Qt_4_0);

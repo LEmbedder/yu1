@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QDateTime>
+#include <QDir>
 
 struct clientSocketDef
 {
@@ -31,7 +32,6 @@ class TcpServer : public QObject
     struct clientSocketDef clientSockets[MAXTCPCLIENTS];
     void stopServerSocket();
     void initTcpServerParams();
-//    void analysisData(clientSocketDef clientSocket);
     bool calculateCrc(QByteArray data, int len);
     void outputToSocket(char *value, int len);
     unsigned short countCRC(QByteArray pBuf);
@@ -39,6 +39,7 @@ class TcpServer : public QObject
     void analysisData(clientSocketDef *clientSocket);
     void test();
     unsigned short countCRC2(char *pBuf, unsigned short DataLen);
+    QString currentDir;
 public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;
