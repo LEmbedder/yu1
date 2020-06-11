@@ -237,6 +237,16 @@ void TcpServer::clientSocketReadyRead(void)
                 {
                     clientSockets[i].readBuf += clientSockets[i].socket->readAll();
                 }
+#if 0
+                printf("11111111111111111111111111\n");
+                for (int j = 0; j < 10; j++)
+                {
+                    printf("0x%x ",(uint8_t)clientSockets[i].readBuf.at(j));
+                }
+                printf("\n");fflush(stdout);
+#endif
+                /* 原数发送给上位机 */
+                tcpClient->ClientDataWrite(clientSockets[i].readBuf.data(),clientSockets[i].readBuf.length());
                 /* 接收到的数据 */
                 analysisData(&clientSockets[i]);
             }

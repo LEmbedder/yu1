@@ -12,6 +12,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(connecToServerSocket()));
 //    timer->start(1000*10);
+    isConnect = false;
 }
 void TcpClient::initTcpClientparams(void)
 {
@@ -25,6 +26,7 @@ bool TcpClient::connecToServerSocket(void)
     cSocket->connectToHost(client.HostIp, client.HostPort, QTcpSocket::ReadWrite);
     if (cSocket->waitForConnected(1000))
     {
+        isConnect = true;
         qDebug("connect ok\n");
         return true;
     } else
@@ -36,10 +38,11 @@ bool TcpClient::connecToServerSocket(void)
 bool TcpClient::disConnectFromServerSocket(void)
 {
     cSocket->disconnectFromHost();
+    isConnect = false;
     return true;
 }
 
-/*Tcp Client connect*/
+/*Tcp Client 读取数据*/
 void TcpClient::ClientDataReceived(void)
 {
 //    timer->start(1000*client.interval);
@@ -51,5 +54,26 @@ void TcpClient::ClientDataReceived(void)
 //        cSocket->read(datagram.data(),datagram.size());
 //        QString msg = datagram.data();
 //        qDebug()<<msg;
+    }
+}
+/* 写出数据 */
+void TcpClient::ClientDataWrite(char *value,int len)
+{
+#if 0
+    printf("222222222222222222222222222222\n");
+    for (int j = 0; j < 10; j++)
+    {
+        printf("0x%x ",(uint8_t)value[j]);
+    }
+    printf("\n");fflush(stdout);
+#endif
+    if (value != NULL && len > 0 && cSocket != NULL && isConnect == true)
+    {
+        cSocket->write(value, len);
+        if (!cSocket->waitForBytesWritten(3000))
+        {
+            //connecToServerSocket();
+        }
+        return;
     }
 }

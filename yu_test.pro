@@ -12,9 +12,11 @@ TEMPLATE = app
 SOURCES += main.cpp \
     tcpserver.cpp \
     sysvar.cpp \
-    tcpclient.cpp
+    tcpclient.cpp \
+    udpserver.cpp
 
 HEADERS += \
     tcpserver.h \
     sysvar.h \
-    tcpclient.h
+    tcpclient.h \
+    udpserver.h

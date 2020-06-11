@@ -21,11 +21,13 @@ class TcpClient : public QObject
     struct s_rmtp client;
     QByteArray ClientreadBuf;
     QTimer *timer;
+    bool isConnect;
 
     void initTcpClientparams();
 public:
     explicit TcpClient(QObject *parent = 0);
 
+    void ClientDataWrite(char *value, int len);
 signals:
 
 public slots:

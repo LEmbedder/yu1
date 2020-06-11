@@ -13,6 +13,7 @@
 #include <QDataStream>
 #include <QDateTime>
 #include <QDir>
+#include "tcpclient.h"
 
 struct clientSocketDef
 {
@@ -43,6 +44,7 @@ class TcpServer : public QObject
 public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;
+    TcpClient *tcpClient;
 
     void startServerSocket();
 signals:
