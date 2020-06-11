@@ -178,7 +178,7 @@ void UdpServer::analysisData(QByteArray *thisData)
                     goto end;
                 }
                 ret[5] = SUCCESS;
-                data2write += tmp.mid(7,tmp.length()-3);
+                data2write += tmp.mid(7, 1024);
             }
 
 //            qDebug("data2write = %d",data2write.length());
