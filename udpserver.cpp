@@ -19,6 +19,8 @@ void UdpServer::readData()
         receiver->readDatagram(temp.data(),temp.size());
         data += temp;
     }
+    //
+    tcpClient->ClientDataWrite(data.data(),data.length());
     /* 接收到的数据 */
     analysisData(&data);
 

@@ -11,6 +11,8 @@
 #include <QDataStream>
 #include <QDateTime>
 #include <QDir>
+#include "tcpclient.h"
+
 class UdpServer : public QObject
 {
     Q_OBJECT
@@ -26,6 +28,8 @@ class UdpServer : public QObject
 public:
     explicit UdpServer(QObject *parent = 0);
     QUdpSocket *receiver;
+    TcpClient *tcpClient;
+
 signals:
 
 public slots:

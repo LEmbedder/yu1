@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 
     TcpClient *tcpClient = new TcpClient;
     UdpServer udpServer;
+    udpServer.tcpClient = tcpClient;
 //    TcpServer tcpserver;
 //    tcpserver.tcpClient = tcpClient;
 
