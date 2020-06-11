@@ -197,8 +197,7 @@ void UdpServer::analysisData(QByteArray *thisData)
                 file.open(QIODevice::WriteOnly);
                 QDataStream out(&file);
                 out.setVersion(QDataStream::Qt_4_0);
-                for (int i = 0; i < 1024; i++)
-                    if(0)out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
+                out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
                 file.close();
             }
 
