@@ -4,6 +4,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
 {
     cSocket = new QTcpSocket(this);
 
+    isConnect = false;
     initTcpClientparams();
     connecToServerSocket();
     connect(cSocket,SIGNAL(readyRead()),this,SLOT(ClientDataReceived()));
@@ -11,8 +12,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(connecToServerSocket()));
-//    timer->start(1000*10);
-    isConnect = false;
+    timer->start(1000*10);
 }
 void TcpClient::initTcpClientparams(void)
 {
@@ -67,7 +67,7 @@ void TcpClient::ClientDataWrite(char *value,int len)
     }
     printf("\n");fflush(stdout);
 #endif
-    if (value != NULL && len > 0 && cSocket != NULL && isConnect == true)
+    if (value != NULL && len > 0 && cSocket != NULL && (isConnect == true))
     {
         cSocket->write(value, len);
         if (!cSocket->waitForBytesWritten(3000))

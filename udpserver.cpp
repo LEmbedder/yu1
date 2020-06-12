@@ -2,6 +2,15 @@
 
 UdpServer::UdpServer(QObject *parent) : QObject(parent)
 {
+    QDir tempDir;
+    //临时保存程序当前路径
+    currentDir = tempDir.currentPath()+"/data/";
+    //如果filePath路径不存在，创建它
+    if(!tempDir.exists(currentDir))
+    {
+        tempDir.mkpath(currentDir);
+    }
+
     receiver = new QUdpSocket(this);
     receiver->bind(SERVERPORT, QUdpSocket::ShareAddress);
     connect(receiver,&QUdpSocket::readyRead,this ,&UdpServer::readData);
@@ -18,9 +27,8 @@ void UdpServer::readData()
         temp.resize(receiver->pendingDatagramSize());
         receiver->readDatagram(temp.data(),temp.size());
         data += temp;
+        tcpClient->ClientDataWrite(temp.data(),temp.length());
     }
-    //
-    tcpClient->ClientDataWrite(data.data(),data.length());
     /* 接收到的数据 */
     analysisData(&data);
 
