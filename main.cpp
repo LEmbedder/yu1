@@ -9,10 +9,11 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     TcpClient *tcpClient = new TcpClient;
-    UdpServer *udpServer = new UdpServer;
 
     SaveDataThread *saveDataThread = new SaveDataThread;
     saveDataThread->setStackSize(1024 * 1024 * 4);
+
+    UdpServer *udpServer = new UdpServer;
     udpServer->tcpClient = tcpClient;
     udpServer->saveDataThread = saveDataThread;
 

@@ -3,20 +3,24 @@
 
 #include <QObject>
 #include <QtCore/QThread>
-#include <sysvar.h>
 #include <QFile>
 #include <QDataStream>
 #include <QDateTime>
 #include <QDir>
+#include <QByteArray>
+#include <QQueue>
+#include <QDebug>
 
 class SaveDataThread : public QThread
 {
     Q_OBJECT
     QString currentDir;
-    bool isRuning;
+    bool isRuning = false;
 public:
     explicit SaveDataThread(QThread *parent = 0);
     virtual void run();
+    QQueue<QString> queueTime;
+    QQueue<QByteArray> queueData;
 signals:
 
 public slots:

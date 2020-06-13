@@ -27,6 +27,7 @@ public:
     QUdpSocket *receiver;
     TcpClient *tcpClient;
     SaveDataThread *saveDataThread;
+
 signals:
 
 public slots:

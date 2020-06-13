@@ -2,7 +2,6 @@
 
 SaveDataThread::SaveDataThread(QThread *parent) : QThread(parent)
 {
-    isRuning = false;
     QDir tempDir;
     //临时保存程序当前路径
     currentDir = tempDir.currentPath()+"/data/";
@@ -11,6 +10,9 @@ SaveDataThread::SaveDataThread(QThread *parent) : QThread(parent)
     {
         tempDir.mkpath(currentDir);
     }
+    queueData.clear();
+    queueTime.clear();
+    isRuning = false;
 }
 
 void SaveDataThread::run()
@@ -33,6 +35,8 @@ void SaveDataThread::run()
                 out.writeRawData(array.data(),array.size());/* 不会有多余的头部字节 */
             file.close();
         }
+    }else{
+        qDebug()<<"savedataThread is running...";
     }
     isRuning = false;
 }

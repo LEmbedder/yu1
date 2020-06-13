@@ -1,9 +1,7 @@
 #include "udpserver.h"
 
 UdpServer::UdpServer(QObject *parent) : QObject(parent)
-{
-    queueData.clear();
-    queueTime.clear();
+{    
     data.resize(MAXTCPBUFSIZE);
     data.clear();
 
@@ -157,7 +155,7 @@ void UdpServer::analysisData(QByteArray *thisData)
         tmp = (unsigned short *)&ret[70];
         *tmp = crc;
         outputToSocket(ret, 72);
-        *thisData = thisData->mid(HANDSHANPLEN);//
+        *thisData = thisData->mid(HANDSHANPLEN);
 
     }/* 数据包 */
     else if (uint8_t(dataTemp.at(0)) == 0x3B)
@@ -190,9 +188,9 @@ void UdpServer::analysisData(QByteArray *thisData)
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                queueData.enqueue(data2write);
-                queueTime.enqueue(current_date);
-                qDebug()<<queueData.size();
+                saveDataThread->queueData.enqueue(data2write);
+                saveDataThread->queueTime.enqueue(current_date);
+                qDebug()<<saveDataThread->queueData.size();
                 saveDataThread->start();
             }
 //            printf("0x%x ",(uint8_t)data2write.at(0));
@@ -200,8 +198,6 @@ void UdpServer::analysisData(QByteArray *thisData)
 //            printf("0x%x ",(uint8_t)data2write.at(2));
 //            printf("0x%x ",(uint8_t)data2write.at(16383));
 //            printf("\n");fflush(stdout);
-
-
 end:
             /* 返回握手确认包 */
             crc = countCRC(&ret[1],70);
@@ -215,18 +211,6 @@ end:
         }else{
             return;
         }
-//        if (data_16K_index == 15)
-//        {
-//            /* 发送应答包 */
-//            char ret[69];
-//            memset(ret, 0, 69);
-//            ret[0] = 0x30;
-//            ret[2] = 0;
-//            for (int i=0;i < 69;i++)
-//            {
-//                ret[68] += ret[i];
-//            }
-//        }
 
     }
 }
