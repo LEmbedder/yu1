@@ -188,8 +188,8 @@ void UdpServer::analysisData(QByteArray *thisData)
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                saveDataThread->queueData.enqueue(data2write);
                 saveDataThread->queueTime.enqueue(current_date);
+                saveDataThread->queueData.enqueue(data2write);
                 qDebug()<<saveDataThread->queueData.size();
                 saveDataThread->start();
             }

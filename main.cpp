@@ -13,20 +13,27 @@ int main(int argc, char *argv[])
     SaveDataThread *saveDataThread = new SaveDataThread;
     saveDataThread->setStackSize(1024 * 1024 * 4);
 
-    if (QString(argv[1]) == "udp")
-    {
-        UdpServer *udpServer = new UdpServer;
-        udpServer->tcpClient = tcpClient;
-        udpServer->saveDataThread = saveDataThread;
-        qDebug()<<"udp";
-    }
-    else if (QString(argv[1]) == "tcp")
+
+    if (QString(argv[1]) == "tcp")
     {
         TcpServer *tcpserver = new TcpServer;
         tcpserver->tcpClient = tcpClient;
         tcpserver->saveDataThread = saveDataThread;
         qDebug()<<"tcp";
 
+    } else {
+        UdpServer *udpServer = new UdpServer;
+        udpServer->tcpClient = tcpClient;
+        udpServer->saveDataThread = saveDataThread;
+        qDebug()<<"udp";
+    }
+    if (QString(argv[2]).toInt())
+    {
+        saveDataTimes = QString(argv[2]).toInt();
+        if (saveDataTimes <=0 || saveDataTimes > 1200)
+        {
+            saveDataTimes = 1;
+        }
     }
     return a.exec();
 }

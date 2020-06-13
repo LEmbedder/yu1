@@ -44,5 +44,5 @@ struct SysData
 };
 
 extern SysData sysData;
-
+extern int saveDataTimes;
 #endif // SYSVAR_H

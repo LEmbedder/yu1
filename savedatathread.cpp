@@ -31,7 +31,7 @@ void SaveDataThread::run()
             file.open(QIODevice::WriteOnly);
             QDataStream out(&file);
             out.setVersion(QDataStream::Qt_4_0);
-            for (int i = 0; i < 1200; i++)
+            for (int i = 0; i < saveDataTimes; i++)
                 out.writeRawData(array.data(),array.size());/* 不会有多余的头部字节 */
             file.close();
         }

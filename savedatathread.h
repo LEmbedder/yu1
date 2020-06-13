@@ -10,6 +10,7 @@
 #include <QByteArray>
 #include <QQueue>
 #include <QDebug>
+#include "sysvar.h"
 
 class SaveDataThread : public QThread
 {
