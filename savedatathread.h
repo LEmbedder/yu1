@@ -21,7 +21,7 @@ public:
     explicit SaveDataThread(QThread *parent = 0);
     virtual void run();
     QQueue<QString> queueTime;
-    QQueue<QByteArray> queueData;
+    QQueue<QByteArray*> queueData;
 signals:
 
 public slots:

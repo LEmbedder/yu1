@@ -29,7 +29,6 @@ class TcpServer : public QObject
 {
     Q_OBJECT
     QByteArray data_all;
-    QByteArray data2write;
     int getIdleClientSocketIndex();
     struct clientSocketDef clientSockets[MAXTCPCLIENTS];
     void stopServerSocket();

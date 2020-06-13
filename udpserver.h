@@ -22,7 +22,6 @@ class UdpServer : public QObject
     bool calculateCrc(QByteArray data, int len);
     void outputToSocket(char *value, int len);
 public:
-    QByteArray data2write;
     explicit UdpServer(QObject *parent = 0);
     QUdpSocket *receiver;
     TcpClient *tcpClient;

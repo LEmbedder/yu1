@@ -23,7 +23,7 @@ void SaveDataThread::run()
         isRuning = true;
         while (!queueData.isEmpty())
         {
-            QByteArray array = queueData.dequeue();
+            QByteArray *array = queueData.dequeue();
             QString current_date = queueTime.dequeue();
 
             current_date = currentDir + current_date + ".dat";
@@ -32,8 +32,9 @@ void SaveDataThread::run()
             QDataStream out(&file);
             out.setVersion(QDataStream::Qt_4_0);
             for (int i = 0; i < saveDataTimes; i++)
-                out.writeRawData(array.data(),array.size());/* 不会有多余的头部字节 */
+                out.writeRawData(array->data(),array->size());/* 不会有多余的头部字节 */
             file.close();
+            delete array;
         }
     }else{
         qDebug()<<"savedataThread is running...";

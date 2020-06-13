@@ -172,16 +172,18 @@ void UdpServer::analysisData(QByteArray *thisData)
 
             data_all = thisData->mid(0, DATALEN);
             /* 对64K拆包校验,如果无误并写入文件 */
+            QByteArray *data2write2 = new QByteArray;
+            data2write2->clear();
             for (int i = 0; i < 16; i++)
             {
                 QByteArray tmp = data_all.mid(0,ONEBAGLEN);
-//                qDebug("tmp = %d",tmp.length());
                 if (!calculateCrc(tmp,ONEBAGLEN)){
                     ret[5] = CRCERR;
+                    delete data2write2;
                     goto end;
                 }
                 ret[5] = SUCCESS;
-                data2write += tmp.mid(7, 1024);
+                data2write2->append(tmp.mid(7, 1024));
             }
 
 //            qDebug("data2write = %d",data2write.length());
@@ -189,22 +191,16 @@ void UdpServer::analysisData(QByteArray *thisData)
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
                 saveDataThread->queueTime.enqueue(current_date);
-                saveDataThread->queueData.enqueue(data2write);
+                saveDataThread->queueData.enqueue(data2write2);
                 qDebug()<<saveDataThread->queueData.size();
                 saveDataThread->start();
             }
-//            printf("0x%x ",(uint8_t)data2write.at(0));
-//            printf("0x%x ",(uint8_t)data2write.at(1));
-//            printf("0x%x ",(uint8_t)data2write.at(2));
-//            printf("0x%x ",(uint8_t)data2write.at(16383));
-//            printf("\n");fflush(stdout);
 end:
             /* 返回握手确认包 */
             crc = countCRC(&ret[1],70);
             tmp = (unsigned short *)&ret[70];
             *tmp = crc;
             outputToSocket(ret, 72);
-            data2write.clear();
             data_all.clear();
             *thisData = thisData->mid(DATALEN);
 //            qDebug("\n");

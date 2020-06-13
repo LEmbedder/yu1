@@ -63,7 +63,6 @@ TcpServer::TcpServer(QObject *parent) : QObject(parent)
     serverSocket    = NULL;
     initTcpServerParams();
     startServerSocket();
-    data2write.clear();
 //    test();
 }
 void TcpServer::initTcpServerParams(void)
@@ -328,19 +327,22 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
 
             data_all = clientSocket->readBuf.mid(0, DATALEN);
             /* 对64K拆包校验,如果无误并写入文件 */
+            QByteArray *data2write2 = new QByteArray;
+            data2write2->clear();
             for (int i = 0; i < 16; i++)
             {
                 QByteArray tmp = data_all.mid(0,ONEBAGLEN);
 //                qDebug("tmp = %d",tmp.length());
                 if (!calculateCrc(tmp,ONEBAGLEN)){
                     ret[5] = CRCERR;
+                    delete data2write2;
                     goto end;
                 }
                 ret[5] = SUCCESS;
-                data2write += tmp.mid(7,1024);
+                data2write2->append(tmp.mid(7, 1024));
             }
 
-            qDebug("data2write = %d",data2write.length());
+//            qDebug("data2write = %d",data2write.length());
 //            printf("0x%x ",(uint8_t)data2write.at(0));
 //            printf("0x%x ",(uint8_t)data2write.at(1));
 //            printf("0x%x ",(uint8_t)data2write.at(2));
@@ -350,21 +352,17 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                saveDataThread->queueData.enqueue(data2write);
                 saveDataThread->queueTime.enqueue(current_date);
+                saveDataThread->queueData.enqueue(data2write2);
                 qDebug()<<saveDataThread->queueData.size();
                 saveDataThread->start();
             }
-
 end:
             /* 返回握手确认包 */
             crc = countCRC(&ret[1],70);
             tmp = (unsigned short *)&ret[70];
             *tmp = crc;
             outputToSocket(ret, 72);
-
-            data2write.clear();
-            data_all.clear();
             clientSocket->readBuf = clientSocket->readBuf.mid(DATALEN);
 //            qDebug("\n");
         }else{
