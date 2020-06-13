@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     if (QString(argv[2]).toInt())
     {
         saveDataTimes = QString(argv[2]).toInt();
-        if (saveDataTimes <=0 || saveDataTimes > 12000)
+        if (saveDataTimes <=0 || saveDataTimes > 1200)
         {
             saveDataTimes = 1;
         }
