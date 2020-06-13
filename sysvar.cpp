@@ -2,3 +2,5 @@
 
 
 struct SysData sysData;
+
+struct SaveDataListCtl saveDataListCtl;

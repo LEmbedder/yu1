@@ -18,18 +18,20 @@ class UdpServer : public QObject
     Q_OBJECT
     QByteArray data;
     QByteArray data_all;
-    QByteArray data2write;
-    QString currentDir;
+
     void analysisData(QByteArray *thisData);
     unsigned short countCRC(QByteArray pBuf);
     unsigned short countCRC(char pBuf[], int length);
     bool calculateCrc(QByteArray data, int len);
     void outputToSocket(char *value, int len);
+    bool insetData2DataList(QString time, QByteArray data);
 public:
+    QByteArray data2write;
     explicit UdpServer(QObject *parent = 0);
     QUdpSocket *receiver;
     TcpClient *tcpClient;
 
+    SaveDataList pupDataFormDataList();
 signals:
 
 public slots:

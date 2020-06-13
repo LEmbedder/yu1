@@ -1,5 +1,7 @@
 #ifndef SYSVAR_H
 #define SYSVAR_H
+#include <QString>
+#include <QByteArray>
 
 /*
  * 服务端数据
@@ -43,4 +45,16 @@ struct SysData
 
 extern SysData sysData;
 
+
+/* 定义队列的数据结构 */
+#define MAXLISTNUMBER 20
+struct SaveDataList{
+    QString time;
+    QByteArray data;
+};
+struct SaveDataListCtl{
+    int number;
+    struct SaveDataList saveDataList[MAXLISTNUMBER];
+};
+extern SaveDataListCtl saveDataListCtl;
 #endif // SYSVAR_H

@@ -2,14 +2,14 @@
 
 UdpServer::UdpServer(QObject *parent) : QObject(parent)
 {
-    QDir tempDir;
-    //临时保存程序当前路径
-    currentDir = tempDir.currentPath()+"/data/";
-    //如果filePath路径不存在，创建它
-    if(!tempDir.exists(currentDir))
+    /* 初始化队列 */
+    saveDataListCtl.number = 0;
+    for (int i = 0; i< MAXLISTNUMBER; i++)
     {
-        tempDir.mkpath(currentDir);
+        saveDataListCtl.saveDataList[i].time.clear();
+        saveDataListCtl.saveDataList[i].data.clear();
     }
+
 
     receiver = new QUdpSocket(this);
     receiver->bind(SERVERPORT, QUdpSocket::ShareAddress);
@@ -191,25 +191,13 @@ void UdpServer::analysisData(QByteArray *thisData)
                 data2write += tmp.mid(7, 1024);
             }
 
-//            qDebug("data2write = %d",data2write.length());
+            qDebug("data2write = %d",data2write.length());
 //            printf("0x%x ",(uint8_t)data2write.at(0));
 //            printf("0x%x ",(uint8_t)data2write.at(1));
 //            printf("0x%x ",(uint8_t)data2write.at(2));
 //            printf("0x%x ",(uint8_t)data2write.at(16383));
 //            printf("\n");fflush(stdout);
-            /* 写入文件 */
-            if (1)
-            {
-                QDateTime current_date_time = QDateTime::currentDateTime();
-                QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                current_date = currentDir + current_date + ".dat";
-                QFile file(current_date);
-                file.open(QIODevice::WriteOnly);
-                QDataStream out(&file);
-                out.setVersion(QDataStream::Qt_4_0);
-                out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
-                file.close();
-            }
+
 
 end:
             /* 返回握手确认包 */
@@ -218,7 +206,6 @@ end:
             *tmp = crc;
             outputToSocket(ret, 72);
 
-            data2write.clear();
             data_all.clear();
             *thisData = thisData->mid(DATALEN);
 //            qDebug("\n");
@@ -239,4 +226,43 @@ end:
 //        }
 
     }
+}
+/* 向队列里添加数据 */
+bool UdpServer::insetData2DataList(QString time, QByteArray data)
+{
+    if (saveDataListCtl.number < MAXLISTNUMBER)
+    {
+        saveDataListCtl.saveDataList[saveDataListCtl.number].time = time;
+        saveDataListCtl.saveDataList[saveDataListCtl.number].data = data;
+
+    }else{
+        qDebug()<<"can inset data dataList is full";
+        goto False;
+    }
+    return true;
+False:
+    return false;
+}
+
+/*  */
+struct SaveDataList UdpServer::pupDataFormDataList()
+{
+    int tmpNumber = saveDataListCtl.number;
+    SaveDataList temp;
+    temp.time.clear();
+    temp.data.clear();
+
+    if (saveDataListCtl.number > 0)
+    {
+        temp = saveDataListCtl.saveDataList[0];
+        saveDataListCtl.number--;
+    }
+    /* 数组向下移动 */
+    for (int i = 0; i < tmpNumber - 1; i++)
+    {
+        saveDataListCtl.saveDataList[i].time = saveDataListCtl.saveDataList[i+1].time;
+        saveDataListCtl.saveDataList[i].data = saveDataListCtl.saveDataList[i+1].data;
+    }
+
+    return temp;
 }

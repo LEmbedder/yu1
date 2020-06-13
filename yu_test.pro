@@ -13,10 +13,12 @@ SOURCES += main.cpp \
     tcpserver.cpp \
     sysvar.cpp \
     tcpclient.cpp \
-    udpserver.cpp
+    udpserver.cpp \
+    savedatathread.cpp
 
 HEADERS += \
     tcpserver.h \
     sysvar.h \
     tcpclient.h \
-    udpserver.h
+    udpserver.h \
+    savedatathread.h
