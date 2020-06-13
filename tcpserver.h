@@ -14,6 +14,7 @@
 #include <QDateTime>
 #include <QDir>
 #include "tcpclient.h"
+#include "savedatathread.h"
 
 struct clientSocketDef
 {
@@ -45,6 +46,7 @@ public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;
     TcpClient *tcpClient;
+    SaveDataThread *saveDataThread;
 
     void startServerSocket();
 signals:

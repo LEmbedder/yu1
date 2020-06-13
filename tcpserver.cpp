@@ -61,20 +61,9 @@ unsigned short TcpServer::countCRC(char pBuf[], int length)
 TcpServer::TcpServer(QObject *parent) : QObject(parent)
 {
     serverSocket    = NULL;
-
     initTcpServerParams();
     startServerSocket();
-    data2write.resize(16384);
     data2write.clear();
-
-    QDir tempDir;
-    //临时保存程序当前路径
-    currentDir = tempDir.currentPath()+"/data/";
-    //如果filePath路径不存在，创建它
-    if(!tempDir.exists(currentDir))
-    {
-        tempDir.mkpath(currentDir);
-    }
 //    test();
 }
 void TcpServer::initTcpServerParams(void)
@@ -289,9 +278,9 @@ bool TcpServer::calculateCrc(QByteArray data,int len)
 
     return true;
 }
-#define HANDSHANPLEN 69
-#define DATALEN      16496
-#define ONEBAGLEN    1031
+#define HANDSHANPLEN 71
+#define DATALEN      16528
+#define ONEBAGLEN    1033
 void TcpServer::analysisData(struct clientSocketDef *clientSocket)
 {
     QByteArray data = clientSocket->readBuf;
@@ -348,10 +337,10 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
                     goto end;
                 }
                 ret[5] = SUCCESS;
-                data2write += tmp.mid(7,tmp.length()-3);
+                data2write += tmp.mid(7,1024);
             }
 
-//            qDebug("data2write = %d",data2write.length());
+            qDebug("data2write = %d",data2write.length());
 //            printf("0x%x ",(uint8_t)data2write.at(0));
 //            printf("0x%x ",(uint8_t)data2write.at(1));
 //            printf("0x%x ",(uint8_t)data2write.at(2));
@@ -361,14 +350,10 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
-                current_date = currentDir + current_date + ".dat";
-                QFile file(current_date);
-                file.open(QIODevice::WriteOnly);
-                QDataStream out(&file);
-                out.setVersion(QDataStream::Qt_4_0);
-                for (int i = 0; i < 1024; i++)
-                    out.writeRawData(data2write.data(),data2write.size());/* 不会有多余的头部字节 */
-                file.close();
+                saveDataThread->queueData.enqueue(data2write);
+                saveDataThread->queueTime.enqueue(current_date);
+                qDebug()<<saveDataThread->queueData.size();
+                saveDataThread->start();
             }
 
 end:
