@@ -2,21 +2,16 @@
 
 UdpServer::UdpServer(QObject *parent) : QObject(parent)
 {
-    /* 初始化队列 */
-    saveDataListCtl.number = 0;
-    for (int i = 0; i< MAXLISTNUMBER; i++)
-    {
-        saveDataListCtl.saveDataList[i].time.clear();
-        saveDataListCtl.saveDataList[i].data.clear();
-    }
-
+    queueData.clear();
+    queueTime.clear();
+    data.resize(MAXTCPBUFSIZE);
+    data.clear();
 
     receiver = new QUdpSocket(this);
     receiver->bind(SERVERPORT, QUdpSocket::ShareAddress);
     connect(receiver,&QUdpSocket::readyRead,this ,&UdpServer::readData);
 
-    data.resize(MAXTCPBUFSIZE);
-    data.clear();
+
 }
 
 void UdpServer::readData()
@@ -192,6 +187,12 @@ void UdpServer::analysisData(QByteArray *thisData)
             }
 
             qDebug("data2write = %d",data2write.length());
+            {
+                QDateTime current_date_time = QDateTime::currentDateTime();
+                QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
+                queueData.enqueue(data2write);
+                queueTime.enqueue(current_date);
+            }
 //            printf("0x%x ",(uint8_t)data2write.at(0));
 //            printf("0x%x ",(uint8_t)data2write.at(1));
 //            printf("0x%x ",(uint8_t)data2write.at(2));
@@ -205,7 +206,7 @@ end:
             tmp = (unsigned short *)&ret[70];
             *tmp = crc;
             outputToSocket(ret, 72);
-
+            data2write.clear();
             data_all.clear();
             *thisData = thisData->mid(DATALEN);
 //            qDebug("\n");
@@ -227,42 +228,6 @@ end:
 
     }
 }
-/* 向队列里添加数据 */
-bool UdpServer::insetData2DataList(QString time, QByteArray data)
-{
-    if (saveDataListCtl.number < MAXLISTNUMBER)
-    {
-        saveDataListCtl.saveDataList[saveDataListCtl.number].time = time;
-        saveDataListCtl.saveDataList[saveDataListCtl.number].data = data;
 
-    }else{
-        qDebug()<<"can inset data dataList is full";
-        goto False;
-    }
-    return true;
-False:
-    return false;
-}
 
-/*  */
-struct SaveDataList UdpServer::pupDataFormDataList()
-{
-    int tmpNumber = saveDataListCtl.number;
-    SaveDataList temp;
-    temp.time.clear();
-    temp.data.clear();
 
-    if (saveDataListCtl.number > 0)
-    {
-        temp = saveDataListCtl.saveDataList[0];
-        saveDataListCtl.number--;
-    }
-    /* 数组向下移动 */
-    for (int i = 0; i < tmpNumber - 1; i++)
-    {
-        saveDataListCtl.saveDataList[i].time = saveDataListCtl.saveDataList[i+1].time;
-        saveDataListCtl.saveDataList[i].data = saveDataListCtl.saveDataList[i+1].data;
-    }
-
-    return temp;
-}

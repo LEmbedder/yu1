@@ -11,6 +11,7 @@
 #include <QDataStream>
 #include <QDateTime>
 #include <QDir>
+#include <QQueue>
 #include "tcpclient.h"
 
 class UdpServer : public QObject
@@ -24,14 +25,14 @@ class UdpServer : public QObject
     unsigned short countCRC(char pBuf[], int length);
     bool calculateCrc(QByteArray data, int len);
     void outputToSocket(char *value, int len);
-    bool insetData2DataList(QString time, QByteArray data);
 public:
     QByteArray data2write;
     explicit UdpServer(QObject *parent = 0);
     QUdpSocket *receiver;
     TcpClient *tcpClient;
+    QQueue<QString> queueTime;
+    QQueue<QByteArray> queueData;
 
-    SaveDataList pupDataFormDataList();
 signals:
 
 public slots:
