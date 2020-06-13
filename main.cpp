@@ -10,12 +10,12 @@ int main(int argc, char *argv[])
 
     TcpClient *tcpClient = new TcpClient;
     UdpServer *udpServer = new UdpServer;
-    udpServer->tcpClient = tcpClient;
 
-    SaveDataThread saveDataThread;
-    saveDataThread.udpServer = udpServer;
-    saveDataThread.setStackSize(1024 * 1024 * 4);
-    saveDataThread.start();
+    SaveDataThread *saveDataThread = new SaveDataThread;
+    saveDataThread->setStackSize(1024 * 1024 * 4);
+    udpServer->tcpClient = tcpClient;
+    udpServer->saveDataThread = saveDataThread;
+
 //    TcpServer tcpserver;
 //    tcpserver.tcpClient = tcpClient;
 

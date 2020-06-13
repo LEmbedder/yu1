@@ -7,12 +7,8 @@
 #include <QDateTime>
 #include <QByteArray>
 #include <string.h>
-#include <QFile>
-#include <QDataStream>
-#include <QDateTime>
-#include <QDir>
-#include <QQueue>
 #include "tcpclient.h"
+#include "savedatathread.h"
 
 class UdpServer : public QObject
 {
@@ -30,9 +26,7 @@ public:
     explicit UdpServer(QObject *parent = 0);
     QUdpSocket *receiver;
     TcpClient *tcpClient;
-    QQueue<QString> queueTime;
-    QQueue<QByteArray> queueData;
-
+    SaveDataThread *saveDataThread;
 signals:
 
 public slots:

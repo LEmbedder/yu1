@@ -1,7 +1,9 @@
 #ifndef SYSVAR_H
 #define SYSVAR_H
+
 #include <QString>
 #include <QByteArray>
+#include <QQueue>
 
 /*
  * 服务端数据
@@ -45,5 +47,6 @@ struct SysData
 
 extern SysData sysData;
 
-
+extern QQueue<QString> queueTime;
+extern QQueue<QByteArray> queueData;
 #endif // SYSVAR_H

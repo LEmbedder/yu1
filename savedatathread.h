@@ -3,16 +3,20 @@
 
 #include <QObject>
 #include <QtCore/QThread>
-#include "udpserver.h"
+#include <sysvar.h>
+#include <QFile>
+#include <QDataStream>
+#include <QDateTime>
+#include <QDir>
 
 class SaveDataThread : public QThread
 {
     Q_OBJECT
     QString currentDir;
+    bool isRuning;
 public:
     explicit SaveDataThread(QThread *parent = 0);
     virtual void run();
-    UdpServer *udpServer;
 signals:
 
 public slots:

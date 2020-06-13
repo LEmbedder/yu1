@@ -2,6 +2,7 @@
 
 SaveDataThread::SaveDataThread(QThread *parent) : QThread(parent)
 {
+    isRuning = false;
     QDir tempDir;
     //临时保存程序当前路径
     currentDir = tempDir.currentPath()+"/data/";
@@ -14,13 +15,14 @@ SaveDataThread::SaveDataThread(QThread *parent) : QThread(parent)
 
 void SaveDataThread::run()
 {
-    while(true)
+    /* 写入文件 */
+    if (isRuning == false)
     {
-        /* 写入文件 */
-        if (!udpServer->queueData.isEmpty())
+        isRuning = true;
+        while (!queueData.isEmpty())
         {
-            QByteArray array = udpServer->queueData.dequeue();
-            QString current_date = udpServer->queueTime.dequeue();
+            QByteArray array = queueData.dequeue();
+            QString current_date = queueTime.dequeue();
 
             current_date = currentDir + current_date + ".dat";
             QFile file(current_date);
@@ -32,5 +34,5 @@ void SaveDataThread::run()
             file.close();
         }
     }
-
+    isRuning = false;
 }

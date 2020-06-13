@@ -186,12 +186,14 @@ void UdpServer::analysisData(QByteArray *thisData)
                 data2write += tmp.mid(7, 1024);
             }
 
-            qDebug("data2write = %d",data2write.length());
+//            qDebug("data2write = %d",data2write.length());
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
                 QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
                 queueData.enqueue(data2write);
                 queueTime.enqueue(current_date);
+                qDebug()<<queueData.size();
+                saveDataThread->start();
             }
 //            printf("0x%x ",(uint8_t)data2write.at(0));
 //            printf("0x%x ",(uint8_t)data2write.at(1));
