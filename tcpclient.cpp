@@ -12,7 +12,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(connecToServerSocket()));
-    timer->start(1000*10);
+//    timer->start(1000*10);
 }
 void TcpClient::initTcpClientparams(void)
 {

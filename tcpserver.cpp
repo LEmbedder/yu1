@@ -221,10 +221,12 @@ void TcpServer::clientSocketReadyRead(void)
             if (len > 0)
             {
 //                clientSockets[i].readBuf = clientSockets[i].socket->readAll();
+                QByteArray temp;
                 while (clientSockets[i].socket->bytesAvailable() > 0)
                 {
-                    clientSockets[i].readBuf += clientSockets[i].socket->readAll();
+                    temp += clientSockets[i].socket->readAll();//clientSockets[i].readBuf
                 }
+                clientSockets[i].readBuf = temp;
 #if 0
                 printf("11111111111111111111111111\n");
                 for (int j = 0; j < 10; j++)
@@ -234,7 +236,7 @@ void TcpServer::clientSocketReadyRead(void)
                 printf("\n");fflush(stdout);
 #endif
                 /* 原数发送给上位机 */
-                tcpClient->ClientDataWrite(clientSockets[i].readBuf.data(),clientSockets[i].readBuf.length());
+                tcpClient->ClientDataWrite(temp.data(),temp.length());
                 /* 接收到的数据 */
                 analysisData(&clientSockets[i]);
             }
