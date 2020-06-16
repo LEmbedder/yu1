@@ -226,7 +226,7 @@ void TcpServer::clientSocketReadyRead(void)
                 {
                     temp += clientSockets[i].socket->readAll();//clientSockets[i].readBuf
                 }
-                clientSockets[i].readBuf = temp;
+                clientSockets[i].readBuf += temp;
 #if 0
                 printf("11111111111111111111111111\n");
                 for (int j = 0; j < 10; j++)

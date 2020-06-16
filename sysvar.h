@@ -14,7 +14,7 @@
  * 客户端数据
  */
 #define HOSTIP   "192.168.1.4"
-#define HOSTPORT 5566
+#define HOSTPORT 15000
 
 /*
  * 应答包返回结果

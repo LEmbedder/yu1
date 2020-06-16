@@ -9,6 +9,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
     connecToServerSocket();
     connect(cSocket,SIGNAL(readyRead()),this,SLOT(ClientDataReceived()));
     connect(cSocket,SIGNAL(disconnected()),this,SLOT(disConnectFromServerSocket()));
+    connect(cSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(disConnectFromServerSocket()));
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(connecToServerSocket()));
@@ -49,11 +50,12 @@ void TcpClient::ClientDataReceived(void)
     while (cSocket->bytesAvailable() > 0)
     {
         ClientreadBuf = cSocket->readAll();
-//        QByteArray datagram;
-//        datagram.resize(cSocket->bytesAvailable());
-//        cSocket->read(datagram.data(),datagram.size());
-//        QString msg = datagram.data();
-//        qDebug()<<msg;
+        QByteArray datagram;
+        datagram.resize(cSocket->bytesAvailable());
+        cSocket->read(datagram.data(),datagram.size());
+        QString msg = datagram.data();
+        qDebug()<<msg;
+        ClientDataWrite(ClientreadBuf.data(),ClientreadBuf.length());
     }
 }
 /* 写出数据 */
@@ -70,7 +72,7 @@ void TcpClient::ClientDataWrite(char *value,int len)
     if (value != NULL && len > 0 && cSocket != NULL && (isConnect == true))
     {
         cSocket->write(value, len);
-        if (!cSocket->waitForBytesWritten(3000))
+        if (!cSocket->waitForBytesWritten(30))
         {
             //connecToServerSocket();
         }
