@@ -6,6 +6,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
 
     isConnect = false;
     initTcpClientparams();
+    loadDeviceSetting();
     connecToServerSocket();
     connect(cSocket,SIGNAL(readyRead()),this,SLOT(ClientDataReceived()));
     connect(cSocket,SIGNAL(disconnected()),this,SLOT(disConnectFromServerSocket()));
@@ -78,4 +79,54 @@ void TcpClient::ClientDataWrite(char *value,int len)
         }
         return;
     }
+}
+/*
+ * load rmtp device setting
+*/
+void TcpClient::loadDeviceSetting()
+{
+    QString fileName = QCoreApplication::applicationDirPath() + "/device";
+    QStringList tagList;
+    if (QFile(fileName).exists())
+    {
+        QSettings setting(fileName, QSettings::IniFormat);
+        setting.beginGroup("TcpClient");
+        tagList = setting.childKeys();
+
+        if(tagList.indexOf("HostIP") != -1)
+        {
+            client.HostIp = setting.value("HostIP").toString();
+        }
+        if(tagList.indexOf("HostPort") != -1)
+        {
+            client.HostPort  = setting.value("HostPort").toInt();
+        }
+        if(tagList.indexOf("Interval") != -1)
+        {
+            client.interval = setting.value("Interval").toInt();
+            if(client.interval < 10)
+            {
+                client.interval = 10;
+            }
+        }
+        setting.endGroup();
+
+    }else
+    {
+        saveDeviceSetting();
+    }
+}
+/*
+ * save rmtp device setting
+*/
+void TcpClient::saveDeviceSetting(void)
+{
+    QString fileName = QCoreApplication::applicationDirPath() + "/device";
+    QSettings setting(fileName, QSettings::IniFormat);
+    //TcpClient
+    setting.beginGroup("TcpClient");
+    setting.setValue("HostIP",QString(client.HostIp));
+    setting.setValue("HostPort",client.HostPort);
+    setting.setValue("Interval",client.interval);
+    setting.endGroup();
 }

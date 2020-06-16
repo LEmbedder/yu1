@@ -5,7 +5,9 @@
 #include <QtNetwork/QTcpSocket>
 #include <QTimer>
 #include "sysvar.h"
-
+#include <QCoreApplication>
+#include <QSettings>
+#include <QFile>
 
 struct s_rmtp{
   QString isEnable;
@@ -24,6 +26,8 @@ class TcpClient : public QObject
     bool isConnect;
 
     void initTcpClientparams();
+    void loadDeviceSetting();
+    void saveDeviceSetting();
 public:
     explicit TcpClient(QObject *parent = 0);
 
