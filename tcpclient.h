@@ -9,12 +9,6 @@
 #include <QSettings>
 #include <QFile>
 
-struct s_rmtp{
-  QString isEnable;
-  QString HostIp;
-  int HostPort;
-  int interval;
-};
 
 class TcpClient : public QObject
 {

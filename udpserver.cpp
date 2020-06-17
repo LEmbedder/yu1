@@ -20,7 +20,11 @@ void UdpServer::readData()
         temp.resize(receiver->pendingDatagramSize());
         receiver->readDatagram(temp.data(),temp.size());
         data += temp;
-        tcpClient->ClientDataWrite(temp.data(),temp.length());
+        if (sysData.connect_type == TCP) {
+            tcpClient->ClientDataWrite(temp.data(),temp.length());
+        } else {
+            udpClient->ClientDataWrite(temp.data(),temp.length());
+        }
     }
     /* 接收到的数据 */
     analysisData(&data);
@@ -189,7 +193,7 @@ void UdpServer::analysisData(QByteArray *thisData)
 //            qDebug("data2write = %d",data2write.length());
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
-                QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
+                QString current_date = current_date_time.toString("yyyy-MM-dd-hh-mm-ss-zzz");
                 saveDataThread->queueTime.enqueue(current_date);
                 saveDataThread->queueData.enqueue(data2write2);
                 qDebug()<<saveDataThread->queueData.size();

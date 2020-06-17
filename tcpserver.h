@@ -15,6 +15,7 @@
 #include <QDir>
 #include "tcpclient.h"
 #include "savedatathread.h"
+#include "udpclient.h"
 
 struct clientSocketDef
 {
@@ -45,6 +46,7 @@ public:
     explicit TcpServer(QObject *parent = 0);
     QTcpServer* serverSocket;
     TcpClient *tcpClient;
+    UdpClient *udpClient;
     SaveDataThread *saveDataThread;
 
     void startServerSocket();

@@ -9,6 +9,7 @@
 #include <string.h>
 #include "tcpclient.h"
 #include "savedatathread.h"
+#include "udpclient.h"
 
 class UdpServer : public QObject
 {
@@ -22,9 +23,10 @@ class UdpServer : public QObject
     bool calculateCrc(QByteArray data, int len);
     void outputToSocket(char *value, int len);
 public:
-    explicit UdpServer(QObject *parent = 0);
+    explicit UdpServer(QObject *parent = nullptr);
     QUdpSocket *receiver;
     TcpClient *tcpClient;
+    UdpClient *udpClient;
     SaveDataThread *saveDataThread;
 
 signals:

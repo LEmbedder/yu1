@@ -236,7 +236,12 @@ void TcpServer::clientSocketReadyRead(void)
                 printf("\n");fflush(stdout);
 #endif
                 /* 原数发送给上位机 */
-                tcpClient->ClientDataWrite(temp.data(),temp.length());
+                if (sysData.connect_type == TCP){
+                    tcpClient->ClientDataWrite(temp.data(),temp.length());
+                }
+                else {
+                    udpClient->ClientDataWrite(temp.data(),temp.length());
+                }
                 /* 接收到的数据 */
                 analysisData(&clientSockets[i]);
             }

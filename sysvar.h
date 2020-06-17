@@ -22,7 +22,10 @@
 #define SUCCESS 0x00 //数据包接收成功；
 #define CRCERR  0x01 //校验错误；
 #define LENERR  0x02 //长度错误；
-
+enum ConnecType{
+  TCP = 1,
+  UDP = 2,
+};
 /*
  * LAN定义
 */
@@ -41,6 +44,13 @@ struct lanDef
 struct SysData
 {
     lanDef lan;
+    ConnecType connect_type;
+};
+struct s_rmtp{
+  QString isEnable;
+  QString HostIp;
+  quint16 HostPort;
+  int interval;
 };
 
 extern SysData sysData;
