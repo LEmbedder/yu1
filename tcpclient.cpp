@@ -51,12 +51,12 @@ void TcpClient::ClientDataReceived(void)
     while (cSocket->bytesAvailable() > 0)
     {
         ClientreadBuf = cSocket->readAll();
-        QByteArray datagram;
-        datagram.resize(cSocket->bytesAvailable());
-        cSocket->read(datagram.data(),datagram.size());
-        QString msg = datagram.data();
-        qDebug()<<msg;
-        ClientDataWrite(ClientreadBuf.data(),ClientreadBuf.length());
+//        QByteArray datagram;
+//        datagram.resize(cSocket->bytesAvailable());
+//        cSocket->read(datagram.data(),datagram.size());
+//        QString msg = datagram.data();
+//        qDebug()<<msg;
+//        ClientDataWrite(ClientreadBuf.data(),ClientreadBuf.length());
     }
 }
 /* 写出数据 */

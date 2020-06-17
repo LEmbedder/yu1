@@ -353,7 +353,7 @@ void TcpServer::analysisData(struct clientSocketDef *clientSocket)
             /* 写入文件 */
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
-                QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm::ss.zzz");
+                QString current_date = current_date_time.toString("yyyy-MM-dd-hh-mm-ss-zzz");
                 saveDataThread->queueTime.enqueue(current_date);
                 saveDataThread->queueData.enqueue(data2write2);
                 qDebug()<<saveDataThread->queueData.size();

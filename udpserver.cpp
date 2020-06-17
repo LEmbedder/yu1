@@ -146,7 +146,7 @@ void UdpServer::analysisData(QByteArray *thisData)
             return;
         /* 发送应答包 */
         unsigned short crc = 0;
-        unsigned short *tmp = 0;
+        unsigned short *tmp = nullptr;
         char ret[72];
         memset(ret, 0 ,72);
         ret[0] = 0x30;
@@ -164,7 +164,7 @@ void UdpServer::analysisData(QByteArray *thisData)
         if (dataTemp.length() >= DATALEN)
         {
             unsigned short crc = 0;
-            unsigned short *tmp = 0;
+            unsigned short *tmp = nullptr;
             char ret[72];
             memset(ret, 0 ,72);
             ret[0] = 0x30;
