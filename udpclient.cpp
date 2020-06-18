@@ -13,6 +13,10 @@ void UdpClient::initTcpClientparams(void)
     client.HostPort = HOSTPORT;
     client.interval = 10;
 }
+void UdpClient::ClientDataWrite(QByteArray data)
+{
+    ClientDataWrite(data.data(), data.length());
+}
 void UdpClient::ClientDataWrite(char *value, int len)
 {
     if (value != nullptr && len > 0 && sender != nullptr)
@@ -25,6 +29,7 @@ void UdpClient::ClientDataWrite(char *value, int len)
         return;
     }
 }
+
 /*
  * load rmtp device setting
 */

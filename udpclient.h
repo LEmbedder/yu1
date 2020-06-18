@@ -22,6 +22,8 @@ public:
     explicit UdpClient(QObject *parent = nullptr);
     QUdpSocket *sender;
     void ClientDataWrite(char *value, int len);
+public slots:
+    void ClientDataWrite(QByteArray data);
 };
 
 #endif // UDPCLIENT_H

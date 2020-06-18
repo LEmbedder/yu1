@@ -21,11 +21,7 @@ void UdpServer::readData()
         receiver->readDatagram(temp.data(),temp.size());
         data += temp;
 //        qDebug("udpserver:%x",QThread::currentThreadId());
-        if (sysData.connect_type == TCP) {
-            emit emitWriteData(temp);
-        } else {
-            udpClient->ClientDataWrite(temp.data(),temp.length());
-        }
+        emit emitWriteData(temp);
     }
     /* 接收到的数据 */
     analysisData(&data);

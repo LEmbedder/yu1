@@ -30,7 +30,6 @@ public:
 signals:
 
 public slots:
-protected slots:
     void ClientDataWrite(QByteArray data);
 private slots:
     void ClientDataReceived();

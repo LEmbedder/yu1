@@ -30,8 +30,8 @@
 #define CRCERR  0x01 //校验错误；
 #define LENERR  0x02 //长度错误；
 enum ConnecType{
-  TCP = 1,
-  UDP = 2,
+  TCPCLIENT = 1,
+  UDPCLIENT = 2,
 };
 /*
  * LAN定义
