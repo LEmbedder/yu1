@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         Usage(argv);
         return -1;
     }
-    if (QString(argv[2]) == "tcpclient")
+    if (QString(argv[2]).toUpper() == "TCPCLIENT")
     {
         client = new QThread;
         client->setStackSize(1024 * 1024 * 4);
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     SaveDataThread *saveDataThread = new SaveDataThread;
     saveDataThread->setStackSize(1024 * 1024 * 4);
 
-    if (QString(argv[1]) == "tcpserver")
+    if (QString(argv[1]).toUpper() == "TCPSERVER")
     {
         TcpServer *tcpserver = new TcpServer;
         tcpserver->udpClient = udpClient;
