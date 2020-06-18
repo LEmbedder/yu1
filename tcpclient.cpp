@@ -14,7 +14,7 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(connecToServerSocket()));
-//    timer->start(1000*10);
+    timer->start(1000*10);
 }
 void TcpClient::initTcpClientparams(void)
 {
@@ -47,7 +47,7 @@ bool TcpClient::disConnectFromServerSocket(void)
 /*Tcp Client 读取数据*/
 void TcpClient::ClientDataReceived(void)
 {
-//    timer->start(1000*client.interval);
+    timer->start(1000*client.interval);
     while (cSocket->bytesAvailable() > 0)
     {
         ClientreadBuf = cSocket->readAll();

@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     UdpClient *udpClient = nullptr;
     QThread   *client    = nullptr;
 
-    qDebug("main:%x",QThread::currentThreadId());
+    DEBUGPRINTF("main:%x",QThread::currentThreadId());
 
     if (argc < 3)
     {

@@ -3,6 +3,11 @@
 
 #include <QString>
 
+#define DEBUG
+#ifdef DEBUG
+#define DEBUGPRINTF qDebug
+#endif
+
 /*
  * 服务端数据
  */
