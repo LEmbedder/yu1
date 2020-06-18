@@ -3,9 +3,11 @@
 
 #include <QString>
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUGPRINTF qDebug
+#else
+#define DEBUGPRINTF(...)
 #endif
 
 /*

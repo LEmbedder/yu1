@@ -137,7 +137,7 @@ void UdpServer::analysisData(QByteArray *thisData)
 {
     QByteArray dataTemp = *thisData;
     int len = dataTemp.length();
-    DEBUGPRINTF()<<"len:"<<len;
+    DEBUGPRINTF("len:",len);
 #if 0
     for (int i = 0; i < len; i++)
     {
