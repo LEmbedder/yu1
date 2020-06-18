@@ -20,9 +20,8 @@ void UdpServer::readData()
         temp.resize(receiver->pendingDatagramSize());
         receiver->readDatagram(temp.data(),temp.size());
         data += temp;
-        qDebug("udpserver:%x",QThread::currentThreadId());
+//        qDebug("udpserver:%x",QThread::currentThreadId());
         if (sysData.connect_type == TCP) {
-//            tcpClient->ClientDataWrite(temp.data(),temp.length());
             emit emitWriteData(temp);
         } else {
             udpClient->ClientDataWrite(temp.data(),temp.length());
@@ -138,6 +137,7 @@ void UdpServer::analysisData(QByteArray *thisData)
 {
     QByteArray dataTemp = *thisData;
     int len = dataTemp.length();
+    qDebug()<<"len:"<<len;
 #if 0
     for (int i = 0; i < len; i++)
     {

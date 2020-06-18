@@ -47,18 +47,22 @@ int main(int argc, char *argv[])
         TcpServer *tcpserver = new TcpServer;
         tcpserver->udpClient = udpClient;
         tcpserver->tcpClient = tcpClient;
-
         tcpserver->saveDataThread = saveDataThread;
+        if (tcpClient != nullptr)
+            QObject::connect(tcpserver,SIGNAL(emitWriteData(QByteArray)),tcpClient,SLOT(ClientDataWrite(QByteArray)));
         qDebug()<<"tcpserver";
 
     } else {
         UdpServer *udpServer = new UdpServer;
         udpServer->udpClient = udpClient;
         udpServer->tcpClient = tcpClient;
-        QObject::connect(udpServer,SIGNAL(emitWriteData(QByteArray)),tcpClient,SLOT(ClientDataWrite(QByteArray)),Qt::QueuedConnection);
         udpServer->saveDataThread = saveDataThread;
+        if (tcpClient != nullptr)
+            QObject::connect(udpServer,SIGNAL(emitWriteData(QByteArray)),tcpClient,SLOT(ClientDataWrite(QByteArray)));
         qDebug()<<"udpserver";
     }
+    if (client != nullptr)
+        client->start();
     if (QString(argv[3]).toInt())
     {
         saveDataTimes = QString(argv[2]).toInt();

@@ -51,7 +51,7 @@ public:
 
     void startServerSocket();
 signals:
-
+    void emitWriteData(QByteArray data);
 public slots:
 private slots:
     void acceptClientSocketConnect();
