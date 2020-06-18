@@ -30,7 +30,7 @@ public:
     SaveDataThread *saveDataThread;
 
 signals:
-
+    void emitWriteData(QByteArray data);
 public slots:
 private slots:
     void readData();

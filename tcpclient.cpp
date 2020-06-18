@@ -59,9 +59,14 @@ void TcpClient::ClientDataReceived(void)
 //        ClientDataWrite(ClientreadBuf.data(),ClientreadBuf.length());
     }
 }
+void TcpClient::ClientDataWrite(QByteArray data)
+{
+    ClientDataWrite(data.data(), data.length());
+}
 /* 写出数据 */
 void TcpClient::ClientDataWrite(char *value,int len)
 {
+    qDebug("ClientDataWrite:%x",QThread::currentThreadId());
 #if 0
     printf("222222222222222222222222222222\n");
     for (int j = 0; j < 10; j++)

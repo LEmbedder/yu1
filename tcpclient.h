@@ -2,12 +2,13 @@
 #define TCPCLIENT_H
 
 #include <QObject>
-#include <QtNetwork/QTcpSocket>
+#include <QtNetwork>
 #include <QTimer>
 #include "sysvar.h"
 #include <QCoreApplication>
 #include <QSettings>
 #include <QFile>
+#include <QThread>
 
 
 class TcpClient : public QObject
@@ -23,12 +24,14 @@ class TcpClient : public QObject
     void loadDeviceSetting();
     void saveDeviceSetting();
 public:
-    explicit TcpClient(QObject *parent = 0);
+    explicit TcpClient(QObject *parent = nullptr);
 
     void ClientDataWrite(char *value, int len);
 signals:
 
 public slots:
+protected slots:
+    void ClientDataWrite(QByteArray data);
 private slots:
     void ClientDataReceived();
     bool disConnectFromServerSocket();

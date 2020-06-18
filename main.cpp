@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
 
     TcpClient *tcpClient = nullptr;
     UdpClient *udpClient = nullptr;
+    QThread   *client    = nullptr;
+
+    qDebug("main:%x",QThread::currentThreadId());
 
     if (argc < 3)
     {
@@ -24,8 +27,11 @@ int main(int argc, char *argv[])
     }
     if (QString(argv[2]) == "tcpclient")
     {
+        client = new QThread;
+        client->setStackSize(1024 * 1024 * 4);
         sysData.connect_type = TCP;
         tcpClient = new TcpClient;
+        tcpClient->moveToThread(client);
         qDebug()<<"tcpclient";
     }else{
         sysData.connect_type = UDP;
@@ -41,6 +47,7 @@ int main(int argc, char *argv[])
         TcpServer *tcpserver = new TcpServer;
         tcpserver->udpClient = udpClient;
         tcpserver->tcpClient = tcpClient;
+
         tcpserver->saveDataThread = saveDataThread;
         qDebug()<<"tcpserver";
 
@@ -48,6 +55,7 @@ int main(int argc, char *argv[])
         UdpServer *udpServer = new UdpServer;
         udpServer->udpClient = udpClient;
         udpServer->tcpClient = tcpClient;
+        QObject::connect(udpServer,SIGNAL(emitWriteData(QByteArray)),tcpClient,SLOT(ClientDataWrite(QByteArray)),Qt::QueuedConnection);
         udpServer->saveDataThread = saveDataThread;
         qDebug()<<"udpserver";
     }
