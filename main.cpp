@@ -13,6 +13,7 @@ void Usage(char *argv[])
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    qDebug()<<VERSION;
 
     TcpClient *tcpClient = nullptr;
     UdpClient *udpClient = nullptr;
