@@ -137,7 +137,7 @@ void UdpServer::analysisData(QByteArray *thisData)
 {
     QByteArray dataTemp = *thisData;
     int len = dataTemp.length();
-    DEBUGPRINTF("len:",len);
+    qDebug("total len:%d",len);
 #if 0
     for (int i = 0; i < len; i++)
     {
@@ -209,11 +209,28 @@ end:
             outputToSocket(ret, 72);
             data_all.clear();
             *thisData = thisData->mid(DATALEN);
+            delete data2write2;
 //            qDebug("\n");
         }else{
             return;
         }
 
+    }
+    else if ((uint8_t(dataTemp.at(0)) != 0x3B) && (dataTemp.length() >= DATALEN))
+    {
+        unsigned short crc = 0;
+        unsigned short *tmp = nullptr;
+        char ret[72];
+        memset(ret, 0 ,72);
+        ret[0] = 0x30;
+        ret[1] = 0x3B;
+        ret[5] = LENERR;
+        thisData->clear();
+
+        crc = countCRC(&ret[1],70);
+        tmp = (unsigned short *)&ret[70];
+        *tmp = crc;
+        outputToSocket(ret, 72);
     }
 }
 
