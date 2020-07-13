@@ -26,6 +26,7 @@ void UdpServer::readData()
         } else {
             udpClient->ClientDataWrite(temp.data(),temp.length());
         }
+//        qDebug("temp len:%d",temp.length());
     }
     /* 接收到的数据 */
     analysisData(&data);
@@ -35,7 +36,7 @@ void UdpServer::outputToSocket(char* value, int len)
 {
     if (value != NULL && len > 0)
     {
-        receiver->writeDatagram(value, len,QHostAddress::Broadcast,SERVERPORT+1);
+        receiver->writeDatagram(value, len,QHostAddress::Broadcast,12345);
         if (!receiver->waitForBytesWritten(3000))
         {
         }
@@ -210,8 +211,8 @@ end:
             data_all.clear();
             *thisData = thisData->mid(DATALEN);
             delete data2write2;
-//            qDebug("\n");
         }else{
+            /* 数据长度不够继续接收数据 */
             return;
         }
 

@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#define VERSION  "2020-07-01 22:01:56"
+#define VERSION  "2020-07-13 22:47:05"
 //#define DEBUG
 #ifdef DEBUG
 #define DEBUGPRINTF qDebug
