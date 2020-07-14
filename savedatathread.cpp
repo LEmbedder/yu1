@@ -28,7 +28,7 @@ void SaveDataThread::run()
 
             current_date = currentDir + current_date + ".dat";
             QFile file(current_date);
-            file.open(QIODevice::WriteOnly);
+            file.open(QFileDevice::WriteOnly);
             QDataStream out(&file);
             out.setVersion(QDataStream::Qt_4_0);
             for (int i = 0; i < saveDataTimes; i++)

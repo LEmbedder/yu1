@@ -210,7 +210,6 @@ end:
             outputToSocket(ret, 72);
             data_all.clear();
             *thisData = thisData->mid(DATALEN);
-            delete data2write2;
         }else{
             /* 数据长度不够继续接收数据 */
             return;
