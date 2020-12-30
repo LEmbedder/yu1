@@ -181,6 +181,10 @@ void UdpServer::analysisData(QByteArray *thisData)
             /* 对64K拆包校验,如果无误并写入文件 */
             QByteArray *data2write2 = new QByteArray;
             data2write2->clear();
+            QChar frequency_band = data_all.at(3);
+
+            QString band=QString(frequency_band.toLatin1()+'0');
+            qDebug()<<band;
             for (int i = 0; i < 16; i++)
             {
                 QByteArray tmp = data_all.mid(0,ONEBAGLEN);
@@ -196,7 +200,8 @@ void UdpServer::analysisData(QByteArray *thisData)
 //            qDebug("data2write = %d",data2write.length());
             {
                 QDateTime current_date_time = QDateTime::currentDateTime();
-                QString current_date = current_date_time.toString("yyyy-MM-dd-hh-mm-ss-zzz");
+                QString current_date = current_date_time.toString("yyyy-MM-dd-hh-mm-ss-zzz-");
+                current_date.append(band);
                 saveDataThread->queueTime.enqueue(current_date);
                 saveDataThread->queueData.enqueue(data2write2);
                 qDebug()<<saveDataThread->queueData.size();
