@@ -29,7 +29,7 @@ bool TcpClient::connecToServerSocket(void)
     if (cSocket->waitForConnected(1000))
     {
         isConnect = true;
-        qDebug("connect ok\n");
+        qDebug("connect %s ,%d  ok\n",client.HostIp.toStdString().c_str(),client.HostPort);
         return true;
     } else
     {
